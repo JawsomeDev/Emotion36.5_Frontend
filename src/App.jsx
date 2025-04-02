@@ -5,6 +5,7 @@ import RecordPage from "./pages/RecordPage"
 import AnalyzePage from "./pages/AnalyzePage"
 import CommunityPage from "./pages/CommunityPage"
 import Navbar from "./components/Navbar"
+import Footer from "./components/Footer"
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/community" element={<CommunityPage />} />
         </Routes>
       </div>
+      <Footer/>
     </Router>
   )
 }
