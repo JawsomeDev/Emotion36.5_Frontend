@@ -7,7 +7,7 @@ import CommunityIntro from "../components/CommunityIntro"
 
 export default function HomePage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10 space-y-12">
+    <div className="max-w-7xl mt-20 mx-auto px-4 py-10 space-y-12">
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold">당신의 감정을 기록하고 관리하세요</h1>
         <p className="text-gray-500">

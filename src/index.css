@@ -5,3 +5,7 @@
 body {
   justify-content: center;
 }
+/* App.css 또는 Tailwind 전역 스타일에 추가 */
+html {
+  overflow-y: scroll;
+}
