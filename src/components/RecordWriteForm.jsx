@@ -5,15 +5,25 @@ import { ko } from "date-fns/locale"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
+import { createEmotionRecord } from "../api/record.js"
 
 const EMOTIONS = [
-  { label: "기쁨", icon: "😊", color: "bg-yellow-100" },
-  { label: "슬픔", icon: "😢", color: "bg-blue-100" },
-  { label: "화남", icon: "😠", color: "bg-red-100" },
-  { label: "평온", icon: "😌", color: "bg-green-100" },
-  { label: "불안", icon: "😰", color: "bg-purple-100" },
-  { label: "피곤", icon: "😴", color: "bg-gray-100" },
+  { label: "기쁨", icon: "😊", color: "bg-yellow-200" },
+  { label: "슬픔", icon: "😢", color: "bg-blue-200" },
+  { label: "화남", icon: "😠", color: "bg-red-200" },
+  { label: "평온", icon: "😌", color: "bg-green-200" },
+  { label: "불안", icon: "😰", color: "bg-purple-200" },
+  { label: "피곤", icon: "😴", color: "bg-gray-200" },
 ]
+
+const EMOTION_MAP = {
+    "기쁨": "JOY",
+    "슬픔": "SADNESS",
+    "화남": "ANGER",
+    "평온": "CALM",
+    "불안": "FEAR",
+    "피곤": "TIRED"
+  }
 
 const EMOTION_TAGS = {
   기쁨: ["행복", "설렘", "만족", "감사", "성취", "즐거움"],
@@ -46,6 +56,30 @@ export default function RecordWriteForm() {
       prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
     )
   }
+
+  const handleSubmit = async () => {
+    const data = {
+        emotion: EMOTION_MAP[selectedEmotion],
+        recordDate: date.toISOString().split("T")[0],
+        diary,
+        emotionTags: selectedTags,
+        detailed: showDetails,
+        reason: details.why,
+        situation: details.situation,
+        relatedPerson: details.who,
+        reliefAttempt: details.howToHeal,
+        reliefFailedReason: details.notWork,
+        reliefSucceeded: details.worked,
+        prevention: details.prevent
+      }
+    try {
+        const result = await createEmotionRecord(data)
+        console.log("등록 성공:", result)
+        console.log(data);
+      } catch (error) {
+        console.error("등록 실패:", error)
+      }
+    }
 
   const availableTags = selectedEmotion ? EMOTION_TAGS[selectedEmotion] || [] : []
 
@@ -142,7 +176,8 @@ export default function RecordWriteForm() {
       )}
 
       <div className="flex justify-end">
-        <button className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition">
+        <button className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition"
+            onClick={handleSubmit}>
           감정 저장하기
         </button>
       </div>
