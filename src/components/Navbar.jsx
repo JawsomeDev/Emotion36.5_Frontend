@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
-import { Thermometer, BarChart2, Youtube, Users, Menu, X } from "lucide-react"
+import { Thermometer, BarChart2, Youtube, Users, Menu, X, History } from "lucide-react"
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -18,6 +18,9 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-6 text-sm font-medium">
           <Link to="/record" className="flex items-center gap-1 hover:underline">
             <Thermometer className="w-4 h-4" /> 감정 기록
+          </Link>
+          <Link to="/record/list" className="flex items-center gap-1 hover:underline">
+            <History className="w-4 h-4" /> 기록 보기
           </Link>
           <Link to="/analyze" className="flex items-center gap-1 hover:underline">
             <BarChart2 className="w-4 h-4" /> 분석 보기

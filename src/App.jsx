@@ -6,6 +6,7 @@ import CommunityPage from "./pages/CommunityPage"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import RecordWritePage from "./pages/RecordWritePage"
+import { ToastContainer } from "react-toastify"
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         </Routes>
       </div>
       <Footer/>
+      <ToastContainer position="top-center" autoClose={3000} />
     </Router>
   )
 }
