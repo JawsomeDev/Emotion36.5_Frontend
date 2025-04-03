@@ -6,7 +6,7 @@ import { CalendarIcon } from "@radix-ui/react-icons"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { createEmotionRecord } from "../api/record.js"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 
 const EMOTIONS = [
@@ -33,7 +33,7 @@ const EMOTION_TAGS = {
   화남: ["분노", "짜증", "실망", "억울함", "답답함", "불만"],
   평온: ["안정", "편안", "여유", "만족", "평화", "안심"],
   불안: ["걱정", "긴장", "두려움", "초조", "스트레스", "혼란"],
-  피곤: ["지침", "무기력", "나른함", "권태", "졸림", "에너지 부족"]
+  피곤: ["지침", "무기력", "나른함", "권태", "졸림", "에너지부족"]
 }
 
 export default function RecordWriteForm() {
@@ -60,6 +60,8 @@ export default function RecordWriteForm() {
         }
 
     const handleSubmit = async () => {
+
+        const {id} = useParams
 
     const today = new Date()
     const selected = new Date(date)
@@ -97,7 +99,7 @@ export default function RecordWriteForm() {
     }
         try {
             await createEmotionRecord(data)
-            navigate("/record/list")
+            navigate(`/record/list/${id}`)
             toast.success("감정 기록이 저장되었습니다.")
         } catch {
             toast.error("등록에 실패하였습니다.")

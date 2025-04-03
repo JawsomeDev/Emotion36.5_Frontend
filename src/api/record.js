@@ -10,3 +10,11 @@ export const createEmotionRecord = async (data) => {
 
   return response.data
 }
+
+export const getList = async (userId, pageParam) => {
+    const res = await axios.get(`${prefix}/emotions/list/${userId}`, {
+      params: { ...pageParam }
+    });
+  
+    return res.data;
+  };
