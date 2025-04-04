@@ -8,6 +8,7 @@ import Footer from "./components/Footer"
 import RecordWritePage from "./pages/RecordWritePage"
 import { ToastContainer } from "react-toastify"
 import RecordListPage from "./pages/RecordListPage"
+import LoginPage from "./pages/LoginPage"
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/analyze" element={<AnalyzePage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/record/list/:id" element={<RecordListPage/>}/>
+          <Route path="/login" element={<LoginPage/>}/>
         </Routes>
       </div>
       <Footer/>

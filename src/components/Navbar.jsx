@@ -31,7 +31,7 @@ export default function Navbar() {
           <Link to="/community" className="flex items-center gap-1 hover:underline">
             <Users className="w-4 h-4" /> 커뮤니티
           </Link>
-          <button className="border border-gray-300 rounded px-2 py-1 hover:bg-gray-100">로그인</button>
+          <Link to="/login" className="border border-gray-300 rounded px-2 py-1 hover:bg-gray-100">로그인</Link>
         </div>
 
         {/* Mobile menu button */}
@@ -58,7 +58,7 @@ export default function Navbar() {
           <Link to="/community" className="flex items-center gap-2">
             <Users className="w-4 h-4" /> 커뮤니티
           </Link>
-          <button className="w-full border rounded py-2">로그인</button>
+          <Link to="/login" className="w-full border rounded py-2">로그인</Link>
         </div>
       )}
     </nav>
