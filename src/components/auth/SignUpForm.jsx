@@ -1,15 +1,27 @@
 import { useState } from "react";
+import { signup } from "../../api/auth";
 
 export default function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [nickname, setNickname] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [error, setError ] = useState("");
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("회원가입 요청:", { email, nickname, password, confirmPassword });
-    // 실제 회원가입 API 연동 필요
+    setError("");
+    setSuccess(false);
+
+    try {
+      const result = await signup({ email, password, confirmPassword, nickname });
+      console.log("회원가입 성공:", result);
+      setSuccess(true);
+    } catch (err) {
+      setError(err.error || "회원가입 실패");
+    }
   };
 
   return (
@@ -55,6 +67,10 @@ export default function SignupForm() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
         />
+
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {success && <p className="text-green-500 text-sm">회원가입이 완료되었습니다!</p>}
+
         <button
             type="submit"
             className="w-full bg-black text-white py-2 rounded hover:bg-gray-800"

@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css"
 import { createEmotionRecord } from "../api/record.js"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
+import { useAuth } from "./context/AuthContext.jsx"
 
 const EMOTIONS = [
     { label: "기쁨", icon: "😊", color: "bg-yellow-200" },
@@ -37,6 +38,9 @@ const EMOTION_TAGS = {
 }
 
 export default function RecordWriteForm() {
+    const {id} = useParams();
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const getToday = () => new Date()
     const [selectedEmotion, setSelectedEmotion] = useState(null)
     const [diary, setDiary] = useState("")
@@ -61,7 +65,7 @@ export default function RecordWriteForm() {
 
     const handleSubmit = async () => {
 
-        const {id} = useParams
+      
 
     const today = new Date()
     const selected = new Date(date)
@@ -99,13 +103,13 @@ export default function RecordWriteForm() {
     }
         try {
             await createEmotionRecord(data)
-            navigate(`/record/list/${id}`)
+            navigate(`/record/list/${user.id}`)
             toast.success("감정 기록이 저장되었습니다.")
         } catch {
             toast.error("등록에 실패하였습니다.")
         }
     }
-    const navigate = useNavigate()
+
 
     const availableTags = selectedEmotion ? EMOTION_TAGS[selectedEmotion] || [] : []
 
