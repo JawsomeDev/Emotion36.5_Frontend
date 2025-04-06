@@ -6,7 +6,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
 import { format } from "date-fns";
 import { FaFilter, FaRegEdit, FaTrashAlt, FaEye } from "react-icons/fa";
-import { getList } from "../api/record";
+import { getList, updateRecord } from "../api/record"; // 서버 API 호출
+import Modal from "./common/Modal";
+import EmotionEditForm from "./EmotionEditForm";
+import { toast } from "react-toastify";
 
 const getNum = (value, defaultValue) => {
   const parsed = parseInt(value);
@@ -38,6 +41,7 @@ export default function EmotionRecordList() {
   const [queryParams, setQueryParams] = useSearchParams();
   const [openMenuId, setOpenMenuId] = useState(null);
   const [openDetailId, setOpenDetailId] = useState(null);
+  const [editingRecord, setEditingRecord] = useState(null);
 
   const page = getNum(queryParams.get("page"), 1);
   const size = getNum(queryParams.get("size"), 10);
@@ -93,6 +97,16 @@ export default function EmotionRecordList() {
     fetchData();
   }, [id, page, size, queryParams]);
 
+  const handleUpdate = (updatedRecord) => {
+    const updatedContent = serverData.content.map((record) =>
+      record.id === updatedRecord.id ? updatedRecord : record
+    );
+    setServerData({
+      ...serverData,
+      content: updatedContent,
+    });
+  };
+
   return (
     <div className="max-w-4xl mx-auto mt-10 px-4">
       <h2 className="text-2xl font-bold mb-1">감정 기록 보기</h2>
@@ -142,7 +156,7 @@ export default function EmotionRecordList() {
                   </div>
                   {openDetailId === record.id && (
                     <div className="mt-4 bg-white p-4 rounded-md border text-sm space-y-2">
-                      {[
+                       {[
                         { key: "reason", label: "이유" },
                         { key: "situation", label: "상황" },
                         { key: "relatedPerson", label: "관련 인물" },
@@ -168,7 +182,7 @@ export default function EmotionRecordList() {
                       <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 w-full text-sm" onClick={() => setOpenDetailId(openDetailId === record.id ? null : record.id)}>
                         <FaEye className="text-gray-600" /> 상세보기
                       </button>
-                      <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 w-full text-sm" onClick={() => console.log("수정", record.id)}>
+                      <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 w-full text-sm" onClick={() => setEditingRecord(record)}>
                         <FaRegEdit className="text-gray-600" /> 수정하기
                       </button>
                       <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 w-full text-sm text-red-500" onClick={() => console.log("삭제", record.id)}>
@@ -186,6 +200,24 @@ export default function EmotionRecordList() {
       </div>
 
       <PageComponent serverData={serverData} movePage={movePage} />
+
+      <Modal isOpen={!!editingRecord} onClose={() => setEditingRecord(null)}>
+        {editingRecord && (
+          <EmotionEditForm
+            record={editingRecord}
+            onSubmit={async (formData) => {
+              try {
+                await updateRecord(editingRecord.id, formData);
+                toast.success("수정 완료!");
+                handleUpdate({ ...editingRecord, ...formData }); // 수정된 내용 반영
+                setEditingRecord(null);
+              } catch (err) {
+                toast.error("감정 일기는 필수입니다.");
+              }
+            }}
+          />
+        )}
+      </Modal>
     </div>
   );
 }

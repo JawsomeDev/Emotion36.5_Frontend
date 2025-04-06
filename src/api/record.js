@@ -1,4 +1,4 @@
-import axios from "axios"
+
 import axiosInstance from "./axiosInstance";
 
 export const API_SERVER_HOST = 'http://localhost:8080'
@@ -39,4 +39,9 @@ export const createEmotionRecord = async (data) => {
   
     return res.data;
   };
+
+  export async function updateRecord(id, data) {
+    const res = await axiosInstance.put(`/emotions/update/${id}`, data);
+    return res.data;
+  }
   

@@ -1,5 +1,3 @@
-// src/components/context/AuthContext.jsx
-
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
@@ -9,6 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
     isLoginMode: true,
     user: null,
+    loading: true, // ✅ 로딩 상태 추가
   });
 
   useEffect(() => {
@@ -18,14 +17,16 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // ⬇️ 새로고침 시 localStorage에서 사용자 정보 복구
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setAuthState({
         isLoginMode: false,
         user: JSON.parse(storedUser),
+        loading: false,
       });
+    } else {
+      setAuthState((prev) => ({ ...prev, loading: false }));
     }
   }, []);
 
@@ -37,10 +38,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginContext = (userData) => {
-    localStorage.setItem("user", JSON.stringify(userData)); // ⬅️ 저장
+    localStorage.setItem("user", JSON.stringify(userData));
     setAuthState({
       isLoginMode: false,
       user: userData,
+      loading: false,
     });
   };
 
@@ -51,6 +53,7 @@ export const AuthProvider = ({ children }) => {
     setAuthState({
       isLoginMode: true,
       user: null,
+      loading: false,
     });
   };
 
