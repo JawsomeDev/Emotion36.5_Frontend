@@ -108,7 +108,7 @@ export default function EmotionEditForm({ record, onSubmit }) {
                 onClick={() => handleTagSelect(tag)}
                 className={`px-4 py-2 border rounded-full text-sm ${
                   form.emotionTags.includes(tag)
-                    ? "bg-blue-200 text-blue-800"
+                    ? "bg-yellow-200 text-blue-800"
                     : "bg-white text-black"
                 }`}
               >
