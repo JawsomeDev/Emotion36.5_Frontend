@@ -1,6 +1,6 @@
 // src/pages/RecordWritePage.jsx
 import React from "react"
-import RecordWriteForm from "../components/RecordWriteForm"
+import RecordWriteForm from "../components/record/RecordWriteForm"
 
 export default function RecordWritePage() {
   return (

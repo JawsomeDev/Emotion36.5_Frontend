@@ -1,5 +1,5 @@
 import React from "react"
-import EmotionRecordList from "../components/EmotionRecordList"
+import EmotionRecordList from "../components/record/EmotionRecordList"
 
 export default function RecordListPage() {
   return (

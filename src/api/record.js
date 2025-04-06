@@ -44,4 +44,9 @@ export const createEmotionRecord = async (data) => {
     const res = await axiosInstance.put(`/emotions/update/${id}`, data);
     return res.data;
   }
+
+  export async function deleteRecord(id){
+    const res = await axiosInstance.delete(`/emotions/delete/${id}`);
+    return res.data;
+  }
   

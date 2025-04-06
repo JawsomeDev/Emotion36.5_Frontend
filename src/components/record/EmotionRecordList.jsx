@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams, useParams } from "react-router-dom";
-import PageComponent from "./common/PageComponent";
+import PageComponent from "../common/PageComponent";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
 import { format } from "date-fns";
 import { FaFilter, FaRegEdit, FaTrashAlt, FaEye } from "react-icons/fa";
-import { getList, updateRecord } from "../api/record"; // 서버 API 호출
-import Modal from "./common/Modal";
+import { getList, updateRecord, deleteRecord } from "../../api/record"; // 서버 API 호출
+import Modal from "../common/Modal";
 import EmotionEditForm from "./EmotionEditForm";
 import { toast } from "react-toastify";
+import DeleteConfirmForm from "./EmotionRecordDeleteForm";
 
 const getNum = (value, defaultValue) => {
   const parsed = parseInt(value);
@@ -42,6 +43,7 @@ export default function EmotionRecordList() {
   const [openMenuId, setOpenMenuId] = useState(null);
   const [openDetailId, setOpenDetailId] = useState(null);
   const [editingRecord, setEditingRecord] = useState(null);
+  const [deletingRecord, setDeletingRecord] = useState(null);
 
   const page = getNum(queryParams.get("page"), 1);
   const size = getNum(queryParams.get("size"), 10);
@@ -185,7 +187,10 @@ export default function EmotionRecordList() {
                       <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 w-full text-sm" onClick={() => setEditingRecord(record)}>
                         <FaRegEdit className="text-gray-600" /> 수정하기
                       </button>
-                      <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 w-full text-sm text-red-500" onClick={() => console.log("삭제", record.id)}>
+                      <button
+                        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 w-full text-sm text-red-500"
+                        onClick={() => setDeletingRecord(record)}
+                      >
                         <FaTrashAlt className="text-red-500" /> 삭제하기
                       </button>
                     </div>
@@ -218,6 +223,29 @@ export default function EmotionRecordList() {
           />
         )}
       </Modal>
+
+      <Modal isOpen={!!deletingRecord} onClose={() => setDeletingRecord(null)}>
+        {deletingRecord && (
+          <DeleteConfirmForm
+            onConfirm={async () => {
+              try {
+                await deleteRecord(deletingRecord.id);
+                toast.success("삭제되었습니다.");
+                setServerData(prev => ({
+                  ...prev,
+                  content: prev.content.filter(r => r.id !== deletingRecord.id)
+                }));
+              } catch (err) {
+                toast.error("삭제에 실패했습니다.");
+              } finally {
+                setDeletingRecord(null);
+              }
+            }}
+            onCancel={() => setDeletingRecord(null)}
+          />
+        )}
+      </Modal>
+      
     </div>
   );
 }
