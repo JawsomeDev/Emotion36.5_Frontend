@@ -1,4 +1,5 @@
 import axios from "axios"
+import axiosInstance from "./axiosInstance";
 
 export const API_SERVER_HOST = 'http://localhost:8080'
 
@@ -15,7 +16,7 @@ const EMOTION_TO_ENUM = {
 
 // 감정 등록
 export const createEmotionRecord = async (data) => {
-  const response = await axios.post(`${prefix}/emotions/create`, data)
+  const response = await axiosInstance.post(`${prefix}/emotions/create`, data)
 
   return response.data
 }
@@ -32,7 +33,7 @@ export const createEmotionRecord = async (data) => {
       ...(date && { date }) // 날짜가 있을 때만 포함
     };
   
-    const res = await axios.get(`${prefix}/emotions/list/${id}`, {
+    const res = await axiosInstance.get(`${prefix}/emotions/list`, {
       params
     });
   
