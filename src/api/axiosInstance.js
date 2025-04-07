@@ -22,7 +22,7 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
-      console.log("인터셉터 응답 에러 발생", error);
+
   
       const originalRequest = error.config;
   
@@ -49,7 +49,6 @@ axiosInstance.interceptors.response.use(
             }
           );
   
-          console.log("✅ 리프레시 성공", res.data);
   
           localStorage.setItem("accessToken", res.data.accessToken);
           localStorage.setItem("refreshToken", res.data.refreshToken);
@@ -57,7 +56,6 @@ axiosInstance.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
           return axiosInstance(originalRequest);
         } catch (refreshError) {
-          console.error("❌ 리프레시 실패", refreshError);
           window.location.href = "/login";
           return Promise.reject(refreshError);
         }

@@ -1,4 +1,3 @@
-
 import axiosInstance from "./axiosInstance";
 
 export const API_SERVER_HOST = 'http://localhost:8080'
@@ -47,6 +46,21 @@ export const createEmotionRecord = async (data) => {
 
   export async function deleteRecord(id){
     const res = await axiosInstance.delete(`/emotions/delete/${id}`);
+    return res.data;
+  }
+  
+  export const fetchMonthlyAnalysis = async () => {
+    const res = await axiosInstance.get("/analysis/monthly");
+    return res.data;
+  };
+  
+  export const fetchEmotionDistribution = async () => {
+    const res = await axiosInstance.get("/analysis/distribution");
+    return res.data;
+  };
+
+  export const fetchWeeklyAnalysis = async () => {
+    const res = await axiosInstance.get("/analysis/weekly");
     return res.data;
   }
   
