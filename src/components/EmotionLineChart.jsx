@@ -27,9 +27,9 @@ import {
             <Line
               type="monotone"
               dataKey="score"
-              stroke="#6366f1"
+              stroke="#a78bfa"
               strokeWidth={3}
-              dot={{ r: 5, stroke: '#6366f1', strokeWidth: 2, fill: '#fff' }}
+              dot={{ r: 5, stroke: '#a78bfa', strokeWidth: 2, fill: '#fff' }}
               activeDot={{ r: 7 }}
               name="감정 점수"
             />
