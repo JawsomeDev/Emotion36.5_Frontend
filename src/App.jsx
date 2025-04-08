@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage"
 import RequireAuth from "./components/RequireAuth"
 import RecommendedContentList from "./components/RecommendedContentList"
 import EmotionAnalysisPage from "./pages/EmotionAnalysisPage"
+import ContentPage from "./pages/ContentPage"
 
 
 export default function App() {
@@ -48,18 +49,18 @@ export default function App() {
           }
         />
         <Route
-          path="/content"
-          element={
-            <RequireAuth>
-              <RecommendedContentList />
-            </RequireAuth>
-          }
-        />
-        <Route
           path="/community"
           element={
             <RequireAuth>
               <CommunityPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/content"
+          element={
+            <RequireAuth>
+              <ContentPage/>
             </RequireAuth>
           }
         />

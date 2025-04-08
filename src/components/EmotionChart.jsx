@@ -20,16 +20,13 @@ export default function EmotionChart() {
       console.log("🧪 감정 차트 데이터 로딩 시작...");
       try {
         const res = await fetchWeeklyAnalysis();
-        console.log("📥 fetchWeeklyAnalysis 응답:", res);
-
         if (res?.flow) {
-          console.log("✅ 차트에 사용될 flow 데이터:", res.flow);
           setData(res.flow);
         } else {
-          console.warn("⚠️ flow 데이터가 없습니다. 전체 응답:", res.data);
+          console.warn(res.data);
         }
       } catch (e) {
-        console.error("❌ 감정 차트 데이터 불러오기 실패", e);
+        console.error(e);
       }
     };
     load();

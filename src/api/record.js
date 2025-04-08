@@ -63,4 +63,16 @@ export const createEmotionRecord = async (data) => {
     const res = await axiosInstance.get("/analysis/weekly");
     return res.data;
   }
+
+  export const fetchEmotionRecommendations = async (emotion) => {
+    const res = await axiosInstance.get(`${prefix}/recommend/latest`, {
+      params: { emotion }
+    });
   
+    return res.data;
+  };
+  
+  export const fetchLatestRecommendations = async () => {
+  const res = await axiosInstance.get("/recommend/latest");
+  return res.data;
+};
