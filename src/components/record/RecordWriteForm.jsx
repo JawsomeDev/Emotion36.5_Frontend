@@ -6,7 +6,7 @@ import { CalendarIcon } from "@radix-ui/react-icons"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { createEmotionRecord } from "../../api/record.js"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import { useAuth } from "../context/AuthContext.jsx"
 
@@ -38,7 +38,7 @@ const EMOTION_TAGS = {
 }
 
 export default function RecordWriteForm() {
-    const {id} = useParams();
+   
     const { user } = useAuth();
     const navigate = useNavigate();
     const getToday = () => new Date()
