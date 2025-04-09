@@ -110,14 +110,22 @@ export default function Navbar() {
           </Link>
 
           {user ? (
-            <span className="text-sm font-medium text-gray-800">👋 {user.nickname}님</span>
-          ) : (
-            <Link to="/login" className="border border-gray-300 rounded px-2 py-1 hover:bg-gray-100">
-              로그인
-            </Link>
-          )}
-        </div>
-      )}
+      <div className="pt-4 border-t border-gray-200">
+        <p className="text-sm font-medium text-gray-800 mb-2">반갑습니다. {user.nickname}님</p>
+        <button
+          onClick={handleLogout}
+          className="w-full border border-gray-300 rounded px-3 py-2 text-sm hover:bg-gray-100 transition"
+        >
+          로그아웃
+        </button>
+      </div>
+    ) : (
+      <Link to="/login" className="border border-gray-300 rounded px-2 py-1 hover:bg-gray-100">
+        로그인
+      </Link>
+    )}
+  </div>
+)}
     </nav>
   );
 }
