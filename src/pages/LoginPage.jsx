@@ -2,6 +2,7 @@ import { useAuth } from "../components/context/AuthContext";
 import LoginForm from "../components/auth/LoginForm"
 import SignupForm from "../components/auth/SignUpForm"
 import { Thermometer } from "lucide-react";
+import KakaoLoginButton from "../components/auth/KakaoLogin";
 
 export default function LoginPage() {
   const { isLoginMode, toggleMode } = useAuth();
@@ -38,9 +39,9 @@ export default function LoginPage() {
         </div>
         {isLoginMode ? <LoginForm /> : <SignupForm />}
         <div className="mt-4 text-center text-gray-500">또는</div>
-        <div className="flex justify-between mt-2">
-          <button className="w-1/2 mr-1 p-2 border rounded">Google 계정</button>
-          <button className="w-1/2 ml-1 p-2 border rounded">Kakao 계정</button>
+        <div className="flex flex-col gap-2 mt-2">
+          {/* <button>Google 계정</button> 등 다른 버튼도 나중에 여기에 */}
+          <KakaoLoginButton />
         </div>
       </div>
     </div>

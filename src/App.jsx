@@ -12,6 +12,7 @@ import RequireAuth from "./components/RequireAuth"
 import RecommendedContentList from "./components/RecommendedContentList"
 import EmotionAnalysisPage from "./pages/EmotionAnalysisPage"
 import ContentPage from "./pages/ContentPage"
+import KakaoCallback from "./components/auth/KaKaoCallback"
 
 
 export default function App() {
@@ -68,6 +69,7 @@ export default function App() {
         {/* 인증 없이 접근 가능한 페이지들 */}
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/member/kakao" element={<KakaoCallback />} />
       </Routes>
     </div>
     <Footer />

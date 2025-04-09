@@ -11,9 +11,26 @@ import {
   History,
 } from "lucide-react";
 
+const REST_API_KEY = 'c01a570f216b6d37b9b32f5c513baebb';
+const LOGOUT_REDIRECT_URI = 'http://localhost:5173';
+
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+
+    if (user?.isSocial) {
+      // 👉 카카오 유저는 카카오 로그아웃도 처리
+      window.location.href = `https://kauth.kakao.com/oauth/logout?client_id=${REST_API_KEY}&logout_redirect_uri=${LOGOUT_REDIRECT_URI}`;
+    } else {
+      // 👉 일반 유저는 그냥 홈으로 이동
+      window.location.href = "/";
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow z-50 border-b border-gray-200">
@@ -49,7 +66,7 @@ export default function Navbar() {
           {user ? (
             <>
               <span className="text-sm">{user.nickname}님</span>
-              <button onClick={logout} className="ml-2 border px-2 py-1 rounded hover:bg-gray-100">
+              <button onClick={handleLogout} className="ml-2 border px-2 py-1 rounded hover:bg-gray-100">
                 로그아웃
               </button>
             </>
