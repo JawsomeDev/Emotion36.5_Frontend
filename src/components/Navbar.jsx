@@ -87,43 +87,54 @@ export default function Navbar() {
       {/* Mobile nav */}
       {mobileOpen && (
         <div className="md:hidden px-4 pb-6 space-y-4 text-sm font-medium animate-fade-in">
-          <Link to="/record" className="flex items-center gap-2">
-            <Thermometer className="w-4 h-4" /> 감정 기록
-          </Link>
-
-          {user && (
-            <Link to={`/record/list/${user.id}`} className="flex items-center gap-2">
-              <History className="w-4 h-4" /> 기록 보기
+          {/* 메뉴 목록 */}
+          <div className="space-y-3">
+            <Link to="/record" className="flex items-center gap-2">
+              <Thermometer className="w-4 h-4" /> 감정 기록
             </Link>
-          )}
 
-          <Link to="/analyze" className="flex items-center gap-2">
-            <BarChart2 className="w-4 h-4" /> 분석 보기
-          </Link>
-          <Link to="/content" className="flex items-center gap-2">
-            <Youtube className="w-4 h-4" /> 콘텐츠 추천
-          </Link>
-          <Link to="/community" className="flex items-center gap-2">
-            <Users className="w-4 h-4" /> 커뮤니티
-          </Link>
+            {user && (
+              <Link to={`/record/list/${user.id}`} className="flex items-center gap-2">
+                <History className="w-4 h-4" /> 기록 보기
+              </Link>
+            )}
 
-          {user ? (
-          <div className="pt-4 border-t border-gray-200">
-            <p className="text-sm font-medium text-gray-800 mb-2">반갑습니다. {user.nickname}님</p>
-            <button
-              onClick={handleLogout}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm hover:bg-gray-100 transition"
-            >
-              로그아웃
-            </button>
+            <Link to="/analyze" className="flex items-center gap-2">
+              <BarChart2 className="w-4 h-4" /> 분석 보기
+            </Link>
+            <Link to="/content" className="flex items-center gap-2">
+              <Youtube className="w-4 h-4" /> 콘텐츠 추천
+            </Link>
+            <Link to="/community" className="flex items-center gap-2">
+              <Users className="w-4 h-4" /> 커뮤니티
+            </Link>
           </div>
-        ) : (
-          <Link to="/login" className="border border-gray-300 rounded px-2 py-1 hover:bg-gray-100">
-            로그인
-          </Link>
-        )}
-      </div>
-    )}
+
+          {/* 로그인 / 로그아웃 영역 */}
+          <div className="pt-5 border-t border-gray-200">
+            {user ? (
+              <>
+                <p className="text-sm font-medium text-gray-800 mb-2">
+                  반갑습니다. {user.nickname}님
+                </p>
+                <button
+                  onClick={handleLogout}
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm hover:bg-gray-100 transition"
+                >
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="block w-full text-center border border-gray-300 rounded px-3 py-2 hover:bg-gray-100 transition"
+              >
+                로그인
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
