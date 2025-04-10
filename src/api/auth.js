@@ -2,13 +2,11 @@ import axios from "axios";
 
 const API_SERVER_HOST = "http://localhost:8080";
 
-export const signup = async (data) => {
-  try {
-    const response = await axios.post(`${API_SERVER_HOST}/api/member/signup`, data);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { error: "회원가입 중 오류가 발생했습니다." };
-  }
+
+
+export const signup = async (formData) => {
+  const res = await axios.post(`${API_SERVER_HOST}/api/member/signup`, formData);
+  return res.data;
 };
 
 export async function login({ email, password }) {
@@ -41,4 +39,18 @@ export async function login({ email, password }) {
     };
   }
   
-  
+  export const requestPasswordReset = async (email) => {
+    const res = await axios.post(`${API_SERVER_HOST}/api/password/request-reset`, null, {
+      params: { email },
+    });
+    return res.data;
+  };
+
+  export const resetPassword = async ({ token, newPassword, confirmPassword }) => {
+    const res = await axios.post(`${API_SERVER_HOST}/api/password/reset`, {
+      token,
+      newPassword,
+      confirmPassword,
+    });
+    return res.data;
+  };

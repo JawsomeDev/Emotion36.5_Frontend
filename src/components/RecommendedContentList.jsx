@@ -1,49 +1,59 @@
-import React from "react"
-
-const recommendedContents = [
-  {
-    emotion: "불안",
-    title: "5분 명상으로 마음의 평화 찾기",
-    url: "https://youtube.com",
-  },
-  {
-    emotion: "슬픔",
-    title: "힐링 피아노 음악 - 스트레스 해소에 좋은 음악",
-    url: "https://youtube.com",
-  },
-  {
-    emotion: "기쁨",
-    title: "긍정적인 마인드셋을 위한 아침 루틴",
-    url: "https://youtube.com",
-  },
-]
+import { Music, Film } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function RecommendedContentList() {
+  const dummyContents = [
+    {
+      emotion: "평온",
+      category: "노래 추천",
+      title: "The Lazy Song",
+      icon: <Music className="w-4 h-4 text-pink-500" />,
+      thumbnail:
+        "https://i.ytimg.com/vi/fLexgOxsZu0/hqdefault.jpg", // 유튜브 썸네일 예시
+    },
+    {
+      emotion: "기쁨",
+      category: "영화 추천",
+      title: "소닉 2",
+      icon: <Film className="w-4 h-4 text-blue-500" />,
+      thumbnail:
+        "https://image.tmdb.org/t/p/w500/6DrHO1jr3qVrViUO6s6kFiAGM7.jpg", // TMDB 포스터 예시
+    },
+  ];
+
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold text-center">감정에 맞는 힐링 콘텐츠 추천</h2>
-      <p className="text-center text-sm text-gray-500">
-        당신의 감정에 맞는 유튜브 영상을 추천해드려요
+    <section className="text-center bg-white p-6 rounded-xl border">
+      <h2 className="text-2xl font-bold mb-2">감정에 맞는 힐링 콘텐츠 추천</h2>
+      <p className="text-gray-500 mb-8">
+        당신의 감정에 맞는 콘텐츠를 추천해드려요
       </p>
-      <div className="grid md:grid-cols-3 gap-4">
-        {recommendedContents.map((item, idx) => (
-          <div key={idx} className="border rounded-lg p-4 space-y-2">
-            <span className="text-xs px-2 py-1 bg-gray-100 rounded-full inline-block">{item.emotion}</span>
-            <h3 className="font-medium text-sm">{item.title}</h3>
-            <a
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full border border-gray-300 text-center py-1 rounded text-sm hover:bg-gray-100"
-            >
-              유튜브에서 보기
-            </a>
+
+      <div className="flex flex-wrap justify-center gap-6 mb-8">
+        {dummyContents.map((item, idx) => (
+          <div
+            key={idx}
+            className="w-72 border rounded-2xl p-4 bg-white shadow hover:shadow-lg transition-all"
+          >
+            <img
+              src={item.thumbnail}
+              alt={item.title}
+              className="w-full h-40 object-cover rounded-xl mb-4"
+            />
+            <div className="flex items-center gap-2 mb-1 text-sm text-gray-600">
+              {item.icon}
+              {item.emotion} · {item.category}
+            </div>
+            <h3 className="font-semibold text-base">{item.title}</h3>
           </div>
         ))}
       </div>
-      <div className="text-center">
-        <button className="text-sm text-gray-500 hover:underline">더 많은 콘텐츠 보기</button>
-      </div>
-    </div>
-  )
+
+      <Link
+        to="/content"
+        className="inline-block bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+      >
+        콘텐츠 추천 받기 →
+      </Link>
+    </section>
+  );
 }

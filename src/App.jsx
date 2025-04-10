@@ -9,10 +9,11 @@ import { ToastContainer } from "react-toastify"
 import RecordListPage from "./pages/RecordListPage"
 import LoginPage from "./pages/LoginPage"
 import RequireAuth from "./components/RequireAuth"
-import RecommendedContentList from "./components/RecommendedContentList"
 import EmotionAnalysisPage from "./pages/EmotionAnalysisPage"
 import ContentPage from "./pages/ContentPage"
 import KakaoCallback from "./components/auth/KaKaoCallback"
+import ResetPasswordForm from "./components/auth/ResetPasswordForm"
+import ForgotPasswordPage from "./pages/ForgotPasswordPage"
 
 
 export default function App() {
@@ -65,11 +66,12 @@ export default function App() {
             </RequireAuth>
           }
         />
-
         {/* 인증 없이 접근 가능한 페이지들 */}
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/member/kakao" element={<KakaoCallback />} />
+        <Route path="/reset-password" element={<ResetPasswordForm />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </Routes>
     </div>
     <Footer />

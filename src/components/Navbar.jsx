@@ -24,10 +24,8 @@ export default function Navbar() {
     localStorage.removeItem("refreshToken");
 
     if (user?.isSocial) {
-      // 👉 카카오 유저는 카카오 로그아웃도 처리
       window.location.href = `https://kauth.kakao.com/oauth/logout?client_id=${REST_API_KEY}&logout_redirect_uri=${LOGOUT_REDIRECT_URI}`;
     } else {
-      // 👉 일반 유저는 그냥 홈으로 이동
       window.location.href = "/";
     }
   };
@@ -110,22 +108,22 @@ export default function Navbar() {
           </Link>
 
           {user ? (
-      <div className="pt-4 border-t border-gray-200">
-        <p className="text-sm font-medium text-gray-800 mb-2">반갑습니다. {user.nickname}님</p>
-        <button
-          onClick={handleLogout}
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm hover:bg-gray-100 transition"
-        >
-          로그아웃
-        </button>
+          <div className="pt-4 border-t border-gray-200">
+            <p className="text-sm font-medium text-gray-800 mb-2">반갑습니다. {user.nickname}님</p>
+            <button
+              onClick={handleLogout}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm hover:bg-gray-100 transition"
+            >
+              로그아웃
+            </button>
+          </div>
+        ) : (
+          <Link to="/login" className="border border-gray-300 rounded px-2 py-1 hover:bg-gray-100">
+            로그인
+          </Link>
+        )}
       </div>
-    ) : (
-      <Link to="/login" className="border border-gray-300 rounded px-2 py-1 hover:bg-gray-100">
-        로그인
-      </Link>
     )}
-  </div>
-)}
     </nav>
   );
 }

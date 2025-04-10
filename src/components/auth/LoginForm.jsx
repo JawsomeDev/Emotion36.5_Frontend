@@ -48,9 +48,19 @@ export default function LoginForm() {
         onChange={(e) => setPassword(e.target.value)}
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
+      <div className="text-right mt-2">
+        <button
+          type="button"
+          onClick={() => navigate("/forgot-password")}
+          className="text-sm text-blue-600 hover:underline"
+        >
+          비밀번호를 잊으셨나요?
+        </button>
+      </div>
       <button type="submit" className="w-full bg-black text-white py-2 rounded hover:bg-gray-800">
         로그인
       </button>
+      
     </form>
   );
 }
