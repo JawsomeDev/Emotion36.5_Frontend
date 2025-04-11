@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchWeeklyAnalysis } from "../api/record";
+import { useAuth } from "./context/AuthContext";
 import {
   LineChart,
   Line,
@@ -13,11 +14,12 @@ import {
 
 export default function EmotionChart() {
   const [data, setData] = useState([]);
+  const {user} = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
+  if(!user) return;
     const load = async () => {
-      console.log("🧪 감정 차트 데이터 로딩 시작...");
       try {
         const res = await fetchWeeklyAnalysis();
         if (res?.flow) {

@@ -16,7 +16,6 @@ export default function KakaoCallback() {
       axios
         .get(`${prefix}/api/member/kakao?code=${code}`) 
         .then((res) => {
-            console.log("백엔드 응답:", res.data);
           const { accessToken, refreshToken, id, email, nickname, isSocial } = res.data;
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("refreshToken", refreshToken);
