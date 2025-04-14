@@ -14,6 +14,7 @@ import ContentPage from "./pages/ContentPage"
 import KakaoCallback from "./components/auth/KaKaoCallback"
 import ResetPasswordForm from "./components/auth/ResetPasswordForm"
 import ForgotPasswordPage from "./pages/ForgotPasswordPage"
+import CommunityListPage from "./pages/CommunityListPage"
 
 
 export default function App() {
@@ -54,7 +55,7 @@ export default function App() {
           path="/community"
           element={
             <RequireAuth>
-              <CommunityPage />
+              <CommunityListPage />
             </RequireAuth>
           }
         />
