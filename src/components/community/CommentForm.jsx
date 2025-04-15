@@ -1,6 +1,6 @@
-// src/components/community/CommentForm.jsx
 import React, { useState } from "react";
 import { createComment } from "../../api/community";
+import { toast } from "react-toastify";
 
 export default function CommentForm({ postId, onCommentAdded }) {
   const [content, setContent] = useState("");
@@ -13,10 +13,12 @@ export default function CommentForm({ postId, onCommentAdded }) {
     setLoading(true);
     try {
       await createComment({ communityId: postId, content });
-      setContent("");
-      onCommentAdded(); // 댓글 다시 불러오기 콜백
+      toast.success("댓글이 작성되었습니다.");
+      setContent(""); // 폼 초기화
+      onCommentAdded(); // 리스트 새로고침 트리거
     } catch (err) {
       console.error("❌ 댓글 작성 실패", err);
+      toast.error("댓글 작성에 실패했습니다.");
     } finally {
       setLoading(false);
     }
