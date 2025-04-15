@@ -1,6 +1,5 @@
-import CommunityForm from "../components/CommunityForm"; 
-import CommunityList from "../components/CommunityList"; 
-import PageComponent from "../components/common/PageComponent"; 
+import CommunityForm from "../components/community/CommunityForm"; 
+import CommunityList from "../components/community/CommunityList"; 
 import { fetchCommunityList } from "../api/community"; 
 import { useEffect, useState } from "react";
 
@@ -13,9 +12,6 @@ export default function CommunityListPage() {
     emotionType: null,
   });
 
-  const movePage = ({ page }) => {
-    setParams((prev) => ({ ...prev, page }));
-  };
 
   useEffect(() => {
     const load = async () => {
@@ -40,7 +36,6 @@ export default function CommunityListPage() {
       {data && (
         <>
           <CommunityList posts={data.content} />
-          <PageComponent serverData={data} movePage={movePage} />
         </>
       )}
     </div>

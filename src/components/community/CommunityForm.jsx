@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { createCommunityPost } from "../api/community";
+import { createCommunityPost } from "../../api/community";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const EMOTIONS = [
   { label: "기쁨", value: "JOY", icon: "😊", color: "bg-yellow-200" },
@@ -29,7 +30,9 @@ const TAG_COLOR_MAP = {
   TIRED: "bg-gray-300 text-black",
 };
 
-export default function CommunityForm({ onPostCreated }) {
+export default function CommunityForm() {
+  const navigate = useNavigate();
+
   const [selectedEmotion, setSelectedEmotion] = useState(null);
   const [emotionValue, setEmotionValue] = useState(null);
   const [selectedTags, setSelectedTags] = useState([]);
@@ -42,7 +45,6 @@ export default function CommunityForm({ onPostCreated }) {
   };
 
   const handleSubmit = async () => {
-    // 필드 유효성 검증
     if (!content.trim()) {
       toast.warn("내용을 입력해주세요.");
       return;
@@ -60,17 +62,19 @@ export default function CommunityForm({ onPostCreated }) {
 
     try {
       await createCommunityPost(data);
-      toast.success("게시글이 등록되었습니다.");
 
-      // 초기화
       setContent("");
       setSelectedTags([]);
       setSelectedEmotion(null);
       setEmotionValue(null);
-
-      onPostCreated();
+      
+      navigate("/community", {
+        state: {
+          justPosted: true,
+          toast: "게시글이 등록되었습니다.",
+        },
+      });
     } catch (e) {
-      // 백엔드로부터 validation 에러 응답이 왔을 때
       if (e.response?.data?.errors) {
         const fieldErrors = e.response.data.errors;
         for (const key in fieldErrors) {
@@ -102,7 +106,10 @@ export default function CommunityForm({ onPostCreated }) {
                 setSelectedTags([]);
               }}
               className={`flex flex-col items-center justify-center p-3 rounded-xl border text-sm
-                ${selectedEmotion === emotion.label ? `${emotion.color} ring-2 ring-black/70` : "bg-white"}`}
+                ${selectedEmotion === emotion.label
+                  ? `${emotion.color} ring-2 ring-black/70`
+                  : "bg-white"
+                }`}
             >
               <span className="text-xl">{emotion.icon}</span>
               {emotion.label}
@@ -111,7 +118,7 @@ export default function CommunityForm({ onPostCreated }) {
         </div>
       </div>
 
-      {/* 내용 */}
+      {/* 내용 입력 */}
       <div>
         <label className="block text-sm font-semibold mb-2">내용</label>
         <textarea
@@ -123,7 +130,7 @@ export default function CommunityForm({ onPostCreated }) {
         />
       </div>
 
-      {/* 감정 태그 */}
+      {/* 감정 태그 선택 */}
       {tagOptions.length > 0 && (
         <div>
           <label className="block text-sm font-semibold mb-2">감정 태그 선택</label>
@@ -133,9 +140,10 @@ export default function CommunityForm({ onPostCreated }) {
                 key={tag}
                 onClick={() => toggleTag(tag)}
                 className={`px-3 py-1 rounded-full text-sm border transition
-                    ${selectedTags.includes(tag)
+                  ${selectedTags.includes(tag)
                     ? TAG_COLOR_MAP[emotionValue] || "bg-gray-300 text-black"
-                    : "bg-white text-gray-600"}`}
+                    : "bg-white text-gray-600"
+                  }`}
               >
                 {tag}
               </button>
@@ -144,7 +152,7 @@ export default function CommunityForm({ onPostCreated }) {
         </div>
       )}
 
-      {/* 제출 */}
+      {/* 버튼 */}
       <div className="text-right">
         <button
           onClick={handleSubmit}

@@ -20,9 +20,6 @@ export const createEmotionRecord = async (data) => {
   return response.data
 }
 
-
-
-
   export const getList = async (id, pageParam) => {
     const { emotion, date, ...rest } = pageParam;
   

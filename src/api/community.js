@@ -2,18 +2,16 @@ import axiosInstance from "./axiosInstance";
 
 const API_SERVER_HOST = "http://localhost:8080";
 
-// 커뮤니티 게시글 목록 조회
-export const fetchCommunityList = async ({ page = 1, sort = "recent", emotionType = null }) => {
+export const fetchCommunityList = async ({ page = 1, emotionType = null }) => {
   const params = {
     page,
-    sort,
   };
   if (emotionType) {
     params.emotionType = emotionType;
   }
 
   const res = await axiosInstance.get("/communities", { params });
-  return res.data;
+  return res.data; // 반드시 서버에서 content, pageNumList 등 포함한 페이징 구조로 줘야 함
 };
 
 export const createCommunityPost = async (data) => {
@@ -38,3 +36,30 @@ export const likePost = (postId) =>
   export const getCommentCount = (postId) =>
     axiosInstance.get(`/comments`, { params: { communityId: postId } });
   
+  // 게시글 단건 조회
+export const getCommunityPost = async (postId) => {
+  const res = await axiosInstance.get(`/communities/${postId}`);
+  return res.data;
+};
+
+// 댓글 작성
+export const createComment = async (data) => {
+  const res = await axiosInstance.post("/comments", data);
+  return res.data; // 반환값: 생성된 댓글 id
+};
+
+// 댓글 조회
+export const getCommentsByPostId = async (postId) => {
+  const res = await axiosInstance.get(`/comments?communityId=${postId}`);
+  return res.data;
+};
+
+// 게시글 삭제
+export const deletePost = async (postId) => {
+  return await axiosInstance.delete(`/communities/${postId}`);
+};
+
+// 게시글 수정
+export const updatePost = async (postId, updateData) => {
+  return await axiosInstance.put(`/communities/${postId}`, updateData);
+};

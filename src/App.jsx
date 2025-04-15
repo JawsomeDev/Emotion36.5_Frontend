@@ -15,6 +15,8 @@ import KakaoCallback from "./components/auth/KaKaoCallback"
 import ResetPasswordForm from "./components/auth/ResetPasswordForm"
 import ForgotPasswordPage from "./pages/ForgotPasswordPage"
 import CommunityListPage from "./pages/CommunityListPage"
+import CommunityPostPage from "./pages/CommunityPostPage"
+import CommunityEditForm from "./components/community/CommunityEditForm"
 
 
 export default function App() {
@@ -67,6 +69,9 @@ export default function App() {
             </RequireAuth>
           }
         />
+        
+        <Route path="/communities/:postId" element={<RequireAuth><CommunityPostPage /></RequireAuth>}/>
+        <Route path="/communities/:postId/edit" element={<RequireAuth><CommunityEditForm/></RequireAuth>}/>
         {/* 인증 없이 접근 가능한 페이지들 */}
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />

@@ -2,7 +2,7 @@ import React from "react"
 import EmotionSelector from "../components/EmotionSelector"
 import EmotionChart from "../components/EmotionChart"
 import RecommendedContentList from "../components/RecommendedContentList"
-import CommunityIntro from "../components/CommunityIntro"
+import CommunityIntro from "../components/community/CommunityIntro"
 
 
 export default function HomePage() {
