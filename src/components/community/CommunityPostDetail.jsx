@@ -1,14 +1,13 @@
 // src/components/community/CommunityPostDetail.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getCommunityPost, likePost, unlikePost, isLikedPost } from "../../api/community";
+import { getCommunityPost, likePost, unlikePost } from "../../api/community";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
 import { ThumbsUp, MessageCircle } from "lucide-react";
 import CommunityDeleteModal from "./CommunityDeleteModal";
 
-// dayjs 설정
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 
@@ -62,7 +61,6 @@ export default function CommunityPostDetail() {
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [liked, setLiked] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const fetchPost = async () => {
@@ -78,19 +76,20 @@ export default function CommunityPostDetail() {
 
   useEffect(() => {
     fetchPost();
-    isLikedPost(postId)
-      .then((res) => setLiked(res.data))
-      .catch(() => setLiked(false));
   }, [postId]);
 
   const handleLikeToggle = async () => {
+    if (!post) return;
     try {
-      if (liked) await unlikePost(postId);
-      else await likePost(postId);
-      setLiked(!liked);
+      const newLiked = !post.liked;
+      const updatedCount = newLiked
+        ? await likePost(postId)
+        : await unlikePost(postId);
+
       setPost((prev) => ({
         ...prev,
-        likeCount: Math.max(0, prev.likeCount + (liked ? -1 : 1))
+        liked: newLiked,
+        likeCount: updatedCount.data
       }));
     } catch (err) {
       console.error("좋아요 실패", err);
@@ -112,7 +111,8 @@ export default function CommunityPostDetail() {
     createdAt,
     likeCount,
     commentCount,
-    isAuthor
+    isAuthor,
+    liked
   } = post;
 
   return (
@@ -153,35 +153,34 @@ export default function CommunityPostDetail() {
             {commentCount}
           </div>
         </div>
-
-        {isAuthor && (
-          <div className="flex justify-end gap-2 mt-6">
-            <button
-              onClick={handleEdit}
-              className="px-4 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300"
-            >
-              수정
-            </button>
-            <button
-              onClick={() => setShowDeleteModal(true)}
-              className="px-4 py-1 text-sm bg-red-400 text-white rounded hover:bg-red-500"
-            >
-              삭제
-            </button>
-          </div>
-        )}
       </div>
+      {/* ✅ 게시글 외부 버튼 박스 */}
+      {isAuthor && (
+        <div className="flex justify-end gap-2 mt-3">
+          <button
+            onClick={handleEdit}
+            className="flex items-center gap-1 px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-100 transition"
+          >
+            <span className="material-symbols-outlined text-base">수정</span> 
+          </button>
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="flex items-center gap-1 px-4 py-2 text-sm text-white bg-red-500 rounded-lg shadow-sm hover:bg-red-600 transition"
+          >
+            <span className="material-symbols-outlined text-base">삭제</span> 
+          </button>
+        </div>
+      )}
 
-     {/* 삭제 모달 */}
-        {showDeleteModal && (
+      {showDeleteModal && (
         <div className="fixed inset-0 z-50">
-            <CommunityDeleteModal
+          <CommunityDeleteModal
             isOpen={showDeleteModal}
             onClose={() => setShowDeleteModal(false)}
             postId={postId}
-            />
+          />
         </div>
-        )}  
+      )}
     </>
   );
 }

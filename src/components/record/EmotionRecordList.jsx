@@ -69,11 +69,21 @@ export default function EmotionRecordList() {
 
   const handleDateChange = (date) => {
     const formattedDate = format(date, "yyyy-MM-dd");
+    const currentFormatted = selectedDate ? format(selectedDate, "yyyy-MM-dd") : null;
+  
     const newParams = { page: 1, size };
-    newParams.date = formattedDate;
-    if (selectedEmotion !== "all") newParams.emotion = selectedEmotion;
-    setQueryParams(newParams);
+  
+    // 같은 날짜를 다시 클릭했으면 필터 제거
+    if (formattedDate === currentFormatted) {
+      if (selectedEmotion !== "all") newParams.emotion = selectedEmotion;
+      setQueryParams(newParams); // 'date' 제거됨
+    } else {
+      newParams.date = formattedDate;
+      if (selectedEmotion !== "all") newParams.emotion = selectedEmotion;
+      setQueryParams(newParams);
+    }
   };
+  
 
   const handleEmotionFilter = (emotion) => {
     const newParams = { page: 1, size };

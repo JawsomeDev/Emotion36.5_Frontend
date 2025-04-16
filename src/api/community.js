@@ -74,7 +74,17 @@ export const unlikeComment = (commentId) => {
   return axiosInstance.delete(`/comments/${commentId}/like`);
 };
 
-// 댓글 좋아요 여부 확인 (optional - 만약 isLikedComment가 따로 있다면 그대로 사용)
-export const isLikedComment = (commentId) => {
-  return axiosInstance.get(`/comments/${commentId}/like`);
+// // 댓글 좋아요 여부 확인 (optional - 만약 isLikedComment가 따로 있다면 그대로 사용)
+// export const isLikedComment = (commentId) => {
+//   return axiosInstance.get(`/comments/${commentId}/like`);
+// };
+
+//  댓글 수정
+export const updateComment = (commentId, content) => {
+  return axiosInstance.put(`/comments/${commentId}`, { content });
+};
+
+//  댓글 삭제
+export const deleteComment = (commentId) => {
+  return axiosInstance.delete(`/comments/${commentId}`);
 };

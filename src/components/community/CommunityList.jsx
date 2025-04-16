@@ -1,14 +1,7 @@
-// CommunityList.jsx - 최종 수정본
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ThumbsUp, MessageCircle } from "lucide-react";
-import {
-  likePost,
-  unlikePost,
-  isLikedPost,
-  getCommentCount,
-  fetchCommunityList,
-} from "../../api/community";
+import { likePost, unlikePost, fetchCommunityList } from "../../api/community";
 import PageComponent from "../common/PageComponent";
 import { toast } from "react-toastify";
 
@@ -50,13 +43,16 @@ const EMOJI = {
   JOY: "😊", SADNESS: "😢", ANGER: "😠", CALM: "🙂", FEAR: "😨", TIRED: "😴"
 };
 
+
 export default function CommunityList() {
   const navigate = useNavigate();
   const location = useLocation();
   const [params, setParams] = useSearchParams();
   const page = getNum(params.get("page"), 1);
   const emotionType = params.get("emotionType");
-  const [justPosted, setJustPosted] = useState(false);
+  
+  
+  
 
   const [serverData, setServerData] = useState({
     currentPage: 1,
@@ -67,8 +63,6 @@ export default function CommunityList() {
     pageNumList: [],
     content: [],
   });
-
-  const [likedMap, setLikedMap] = useState({});
 
   const movePage = ({ page }) => {
     const newParams = new URLSearchParams(params);
@@ -84,58 +78,43 @@ export default function CommunityList() {
     setParams(newParams);
   };
 
-  // 🔄 새 게시글 작성 후 상태 감지
   useEffect(() => {
-    if (location.state?.justPosted) {
-      setJustPosted(true);
-      if (location.state.toast) toast.success(location.state.toast);
-      window.history.replaceState({}, "");
-    }
-  }, [location.state]);
-
-  useEffect(() => {
+    const toastMessage = location.state?.toast;
+  
     const loadData = async () => {
       try {
         const result = await fetchCommunityList({ page, emotionType });
         setServerData(result);
-
-        const newLiked = {};
-        await Promise.all(
-          result.content.map(async (post) => {
-            try {
-              const [liked] = await Promise.all([
-                isLikedPost(post.id),
-                getCommentCount(post.id),
-              ]);
-              newLiked[post.id] = liked.data;
-            } catch {
-              newLiked[post.id] = false;
-            }
-          })
-        );
-        setLikedMap(newLiked);
+  
+        // toast는 데이터 갱신 이후 한 번만
+        if (toastMessage) toast.success(toastMessage);
       } catch (err) {
         console.error("불러오기 실패", err);
       }
     };
-
+  
     loadData();
-    if (justPosted) setJustPosted(false); // 🔁 상태 리셋
-  }, [page, emotionType, justPosted]);
+  
+    // 히스토리 초기화는 fetch 후 해줘야 불필요한 재랜더링 방지됨
+    if (location.state?.toast) {
+      window.history.replaceState({}, "");
+    }
+  }, [page, emotionType, location.state]);
+  
 
   const handleLikeToggle = async (postId) => {
-    const isLiked = likedMap[postId];
+    const isLiked = serverData.content.find(p => p.id === postId)?.liked ?? false;
     try {
       if (isLiked) await unlikePost(postId);
       else await likePost(postId);
-      setLikedMap((prev) => ({ ...prev, [postId]: !isLiked }));
-      setServerData((prev) => ({
+
+      setServerData(prev => ({
         ...prev,
-        content: prev.content.map((p) =>
+        content: prev.content.map(p =>
           p.id === postId
-            ? { ...p, likeCount: Math.max(0, p.likeCount + (isLiked ? -1 : 1)) }
+            ? { ...p, likeCount: Math.max(0, p.likeCount + (isLiked ? -1 : 1)), liked: !isLiked }
             : p
-        ),
+        )
       }));
     } catch (err) {
       console.error("좋아요 실패", err);
@@ -144,7 +123,6 @@ export default function CommunityList() {
 
   return (
     <div className="space-y-6">
-      {/* 감정 필터 */}
       <div className="flex flex-wrap gap-2 mb-6">
         {EMOTION_FILTERS.map(({ label, value }) => (
           <button
@@ -161,18 +139,17 @@ export default function CommunityList() {
         ))}
       </div>
 
-      {/* 게시글 */}
       {serverData.content.length === 0 ? (
         <p className="text-center text-gray-500">해당 감정의 게시글이 없습니다.</p>
       ) : (
-        serverData.content.map((post) => (
+        serverData.content.map(post => (
           <div key={post.id} className={`p-6 rounded-lg shadow ${COLOR_MAP[post.emotion]}`}>
             <div className="flex justify-between text-sm">
               <div className={`flex items-center gap-2 font-semibold ${TEXT_COLOR_MAP[post.emotion]}`}>
                 <span className={`inline-flex items-center gap-1 px-3 py-1 text-sm rounded-full ${COLOR_MAP[post.emotion]} border`}>
                   {EMOJI[post.emotion]} {EMOTION_LABELS[post.emotion]}
                 </span>
-                <span>{post.author?.nickname}</span>
+                <span>{post.author}</span>
               </div>
               <span className="text-sm text-gray-500">
                 {new Date(post.createdAt).toLocaleString()}
@@ -186,7 +163,7 @@ export default function CommunityList() {
             <div className={`flex justify-between items-center mt-4 text-sm ${TEXT_COLOR_MAP[post.emotion]}`}>
               <div className="flex items-center gap-4">
                 <button onClick={() => handleLikeToggle(post.id)} className="flex items-center gap-1">
-                  <ThumbsUp className={`w-4 h-4 ${likedMap[post.id] ? "fill-current" : ""}`} />
+                  <ThumbsUp className={`w-4 h-4 ${post.liked ? "fill-current" : ""}`} />
                   {post.likeCount}
                 </button>
                 <div className="flex items-center gap-1">

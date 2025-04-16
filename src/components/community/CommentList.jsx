@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import {
   getCommentsByPostId,
-  isLikedComment,
   likeComment,
   unlikeComment,
 } from "../../api/community";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { ThumbsUp } from "lucide-react";
+import {
+  MoreHorizontal,
+  ThumbsUp,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import "dayjs/locale/ko";
+import CommentEditModal from "./CommentEditModal";
+import CommentDeleteModal from "./CommentDeleteModal";
 
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
@@ -18,26 +24,15 @@ const INITIAL_COUNT = 5;
 export default function CommentList({ postId, triggerRefresh }) {
   const [comments, setComments] = useState([]);
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
-  const [likedMap, setLikedMap] = useState({});
   const [loading, setLoading] = useState(true);
+  const [activeMenuId, setActiveMenuId] = useState(null);
+  const [editingComment, setEditingComment] = useState(null);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
 
   const loadComments = async () => {
     try {
       const res = await getCommentsByPostId(postId);
       setComments(res);
-
-      const likedState = {};
-      await Promise.all(
-        res.map(async (comment) => {
-          try {
-            const likedRes = await isLikedComment(comment.id);
-            likedState[comment.id] = likedRes.data;
-          } catch {
-            likedState[comment.id] = false;
-          }
-        })
-      );
-      setLikedMap(likedState);
     } catch (err) {
       console.error("❌ 댓글 불러오기 실패", err);
     } finally {
@@ -46,15 +41,17 @@ export default function CommentList({ postId, triggerRefresh }) {
   };
 
   const handleLikeToggle = async (commentId) => {
-    const isLiked = likedMap[commentId];
     try {
-      const res = isLiked
+      const comment = comments.find((c) => c.id === commentId);
+      const res = comment.liked
         ? await unlikeComment(commentId)
         : await likeComment(commentId);
-      setLikedMap((prev) => ({ ...prev, [commentId]: !isLiked }));
+
       setComments((prev) =>
         prev.map((c) =>
-          c.id === commentId ? { ...c, likeCount: res.data } : c
+          c.id === commentId
+            ? { ...c, liked: !c.isLiked, likeCount: res.data }
+            : c
         )
       );
     } catch (err) {
@@ -62,9 +59,19 @@ export default function CommentList({ postId, triggerRefresh }) {
     }
   };
 
+  const handleUpdate = (id, newContent) => {
+    setComments((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, content: newContent } : c))
+    );
+  };
+
+  const handleDelete = (id) => {
+    setComments((prev) => prev.filter((c) => c.id !== id));
+  };
+
   useEffect(() => {
     loadComments();
-    setVisibleCount(INITIAL_COUNT); // refresh 시 초기화
+    setVisibleCount(INITIAL_COUNT);
   }, [postId, triggerRefresh]);
 
   if (loading) return <div className="text-center mt-4">댓글을 불러오는 중...</div>;
@@ -77,19 +84,65 @@ export default function CommentList({ postId, triggerRefresh }) {
   return (
     <div className="mt-6 space-y-4">
       {visibleComments.map((comment) => (
-        <div key={comment.id} className="border rounded-md p-4 bg-white shadow-sm">
-          <div className="flex justify-between text-sm text-gray-500 mb-2">
-            <span className="font-semibold">{comment.authorNickname || "알 수 없음"}</span>
-            <span>{dayjs(comment.createdAt).fromNow()}</span>
+        <div
+          key={comment.id}
+          className="border rounded-md p-4 bg-white shadow-sm relative"
+        >
+          <div className="flex justify-between items-center text-sm text-gray-500 mb-2">
+            <div className="flex gap-2 items-center">
+              <span className="font-semibold">{comment.authorNickname || "알 수 없음"}</span>
+              <span className="text-gray-400 text-xs">
+                {dayjs(comment.createdAt).fromNow()}
+              </span>
+            </div>
+            <div className="relative">
+              <button
+                onClick={() =>
+                  setActiveMenuId(activeMenuId === comment.id ? null : comment.id)
+                }
+                className="p-1 hover:bg-gray-100 rounded-full"
+              >
+                <MoreHorizontal className="w-4 h-4" />
+              </button>
+
+              {activeMenuId === comment.id && (
+                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-md z-10">
+                  <button
+                    onClick={() => {
+                      setEditingComment(comment);
+                      setActiveMenuId(null);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-blue-600 hover:bg-gray-100 w-full"
+                  >
+                    <Pencil className="w-4 h-4" />
+                    수정하기
+                  </button>
+                  <button
+                    onClick={() => {
+                      setDeletingCommentId(comment.id);
+                      setActiveMenuId(null);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-gray-100 w-full"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    삭제하기
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="text-gray-800 text-base whitespace-pre-line">{comment.content}</div>
+
+          <div className="text-gray-800 text-base whitespace-pre-line">
+            {comment.content}
+          </div>
+
           <div className="text-sm text-gray-500 mt-2 flex items-center gap-2">
             <button
               onClick={() => handleLikeToggle(comment.id)}
               className="flex items-center gap-1 hover:text-black transition"
             >
               <ThumbsUp
-                className={`w-4 h-4 ${likedMap[comment.id] ? "fill-current text-black" : ""}`}
+                className={`w-4 h-4 ${comment.liked ? "fill-current text-black" : ""}`}
               />
               {comment.likeCount ?? 0}
             </button>
@@ -107,6 +160,26 @@ export default function CommentList({ postId, triggerRefresh }) {
             댓글 더 보기
           </button>
         </div>
+      )}
+
+      {/* 수정 모달 */}
+      {editingComment && (
+        <CommentEditModal
+          comment={editingComment}
+          isOpen={true}
+          onClose={() => setEditingComment(null)}
+          onUpdate={handleUpdate}
+        />
+      )}
+
+      {/* 삭제 모달 */}
+      {deletingCommentId && (
+        <CommentDeleteModal
+          commentId={deletingCommentId}
+          isOpen={true}
+          onClose={() => setDeletingCommentId(null)}
+          onDelete={handleDelete}
+        />
       )}
     </div>
   );

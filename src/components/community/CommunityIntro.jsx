@@ -6,7 +6,7 @@ export default function CommunityIntro() {
     <div className="bg-gray-50 rounded-xl text-center py-10 px-6 mt-10">
       <h2 className="text-2xl font-bold mb-2">감정 공유 커뮤니티</h2>
       <p className="text-gray-500 mb-6">
-        비슷한 감정을 가진 사람들과 익명으로 소통하고 공감대를 형성해보세요
+        비슷한 감정을 가진 사람들과 소통하고 공감대를 형성해보세요
       </p>
       <Link
         to="/community"
