@@ -5,6 +5,16 @@ import { likePost, unlikePost, fetchCommunityList } from "../../api/community";
 import PageComponent from "../common/PageComponent";
 import { toast } from "react-toastify";
 
+// ✅ dayjs 추가
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import "dayjs/locale/ko";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale("ko");
+
 const getNum = (v, d) => isNaN(parseInt(v)) ? d : parseInt(v);
 
 const EMOTION_FILTERS = [
@@ -43,16 +53,12 @@ const EMOJI = {
   JOY: "😊", SADNESS: "😢", ANGER: "😠", CALM: "🙂", FEAR: "😨", TIRED: "😴"
 };
 
-
 export default function CommunityList() {
   const navigate = useNavigate();
   const location = useLocation();
   const [params, setParams] = useSearchParams();
   const page = getNum(params.get("page"), 1);
   const emotionType = params.get("emotionType");
-  
-  
-  
 
   const [serverData, setServerData] = useState({
     currentPage: 1,
@@ -80,27 +86,23 @@ export default function CommunityList() {
 
   useEffect(() => {
     const toastMessage = location.state?.toast;
-  
+
     const loadData = async () => {
       try {
         const result = await fetchCommunityList({ page, emotionType });
         setServerData(result);
-  
-        // toast는 데이터 갱신 이후 한 번만
         if (toastMessage) toast.success(toastMessage);
       } catch (err) {
         console.error("불러오기 실패", err);
       }
     };
-  
+
     loadData();
-  
-    // 히스토리 초기화는 fetch 후 해줘야 불필요한 재랜더링 방지됨
+
     if (location.state?.toast) {
       window.history.replaceState({}, "");
     }
   }, [page, emotionType, location.state]);
-  
 
   const handleLikeToggle = async (postId) => {
     const isLiked = serverData.content.find(p => p.id === postId)?.liked ?? false;
@@ -152,7 +154,8 @@ export default function CommunityList() {
                 <span>{post.author}</span>
               </div>
               <span className="text-sm text-gray-500">
-                {new Date(post.createdAt).toLocaleString()}
+                {/* ✅ 한국 시간 기준 포맷 */}
+                {dayjs(post.createdAt).tz("Asia/Seoul").format("YYYY.MM.DD HH:mm")}
               </span>
             </div>
 

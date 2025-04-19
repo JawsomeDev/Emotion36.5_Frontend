@@ -1,13 +1,17 @@
-// src/components/community/CommunityPostDetail.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getCommunityPost, likePost, unlikePost } from "../../api/community";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import "dayjs/locale/ko";
 import { ThumbsUp, MessageCircle } from "lucide-react";
 import CommunityDeleteModal from "./CommunityDeleteModal";
 
+// ✅ 플러그인 확장
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 
@@ -125,7 +129,10 @@ export default function CommunityPostDetail() {
             </span>
             <span>{author.nickname}</span>
           </div>
-          <span className="text-sm text-gray-500">{dayjs(createdAt).fromNow()}</span>
+          {/* ✅ KST 기준 상대시간 표시 */}
+          <span className="text-sm text-gray-500">
+            {dayjs(createdAt).tz("Asia/Seoul").fromNow()}
+          </span>
         </div>
 
         <div className={`mt-2 text-[16px] whitespace-pre-line break-words ${TEXT_COLOR_MAP[emotion]}`}>
@@ -154,7 +161,7 @@ export default function CommunityPostDetail() {
           </div>
         </div>
       </div>
-      {/* ✅ 게시글 외부 버튼 박스 */}
+
       {isAuthor && (
         <div className="flex justify-end gap-2 mt-3">
           <button
