@@ -1,9 +1,8 @@
+// src/pages/KakaoCallback.jsx
 import { useEffect } from "react";
-import { useAuth } from "../context/AuthContext"; // 꼭 import
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-const prefix = "http://localhost:8080"
+import { useAuth } from "../context/AuthContext";
+import { kakaoLogin } from "../../api/kakaoApi";
 
 export default function KakaoCallback() {
   const navigate = useNavigate();
@@ -13,18 +12,17 @@ export default function KakaoCallback() {
     const code = new URL(window.location.href).searchParams.get("code");
 
     if (code) {
-      axios
-        .get(`${prefix}/api/member/kakao?code=${code}`) 
+      kakaoLogin(code)
         .then((res) => {
           const { accessToken, refreshToken, id, email, nickname, isSocial } = res.data;
+
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("refreshToken", refreshToken);
 
-
           const userData = { id, nickname, email, isSocial };
-            localStorage.setItem("user", JSON.stringify(userData));
-            loginContext(userData); 
-          
+          localStorage.setItem("user", JSON.stringify(userData));
+          loginContext(userData);
+
           navigate("/");
         })
         .catch(() => {
