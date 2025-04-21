@@ -31,7 +31,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow z-50 border-b border-gray-200">
+    <nav className="fixed top-0 left-0 w-full bg-white shadow z-50 border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="text-lg font-bold flex items-center gap-2">
           <Thermometer className="w-5 h-5 text-black" />
@@ -86,7 +86,7 @@ export default function Navbar() {
 
       {/* Mobile nav */}
       {mobileOpen && (
-        <div className="md:hidden px-4 pb-6 space-y-4 text-sm font-medium animate-fade-in">
+        <div className="md:hidden px-4 pb-6 space-y-4 text-sm font-medium animate-fade-in bg-white">
           {/* 메뉴 목록 */}
           <div className="space-y-3">
             <Link to="/record" className="flex items-center gap-2">
