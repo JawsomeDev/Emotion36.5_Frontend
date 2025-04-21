@@ -95,41 +95,45 @@ export default function CommentList({ postId, triggerRefresh }) {
                 {dayjs(comment.createdAt).fromNow()}
               </span>
             </div>
-            <div className="relative">
-              <button
-                onClick={() =>
-                  setActiveMenuId(activeMenuId === comment.id ? null : comment.id)
-                }
-                className="p-1 hover:bg-gray-100 rounded-full"
-              >
-                <MoreHorizontal className="w-4 h-4" />
-              </button>
 
-              {activeMenuId === comment.id && (
-                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-md z-10">
-                  <button
-                    onClick={() => {
-                      setEditingComment(comment);
-                      setActiveMenuId(null);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-blue-600 hover:bg-gray-100 w-full"
-                  >
-                    <Pencil className="w-4 h-4" />
-                    수정하기
-                  </button>
-                  <button
-                    onClick={() => {
-                      setDeletingCommentId(comment.id);
-                      setActiveMenuId(null);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-gray-100 w-full"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    삭제하기
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* ✅ 작성자인 경우에만 메뉴 아이콘 및 메뉴 표시 */}
+            {comment.author && (
+              <div className="relative">
+                <button
+                  onClick={() =>
+                    setActiveMenuId(activeMenuId === comment.id ? null : comment.id)
+                  }
+                  className="p-1 hover:bg-gray-100 rounded-full"
+                >
+                  <MoreHorizontal className="w-4 h-4" />
+                </button>
+
+                {activeMenuId === comment.id && (
+                  <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-md z-10">
+                    <button
+                      onClick={() => {
+                        setEditingComment(comment);
+                        setActiveMenuId(null);
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-blue-600 hover:bg-gray-100 w-full"
+                    >
+                      <Pencil className="w-4 h-4" />
+                      수정하기
+                    </button>
+                    <button
+                      onClick={() => {
+                        setDeletingCommentId(comment.id);
+                        setActiveMenuId(null);
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-gray-100 w-full"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      삭제하기
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="text-gray-800 text-base whitespace-pre-line">

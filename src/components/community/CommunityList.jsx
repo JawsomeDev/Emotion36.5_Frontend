@@ -169,7 +169,10 @@ export default function CommunityList() {
                   <ThumbsUp className={`w-4 h-4 ${post.liked ? "fill-current" : ""}`} />
                   {post.likeCount}
                 </button>
-                <div className="flex items-center gap-1">
+                <div
+                  className="flex items-center gap-1 cursor-pointer"
+                  onClick={() => navigate(`/communities/${post.id}`)}
+                >
                   <MessageCircle className="w-4 h-4" />
                   {post.commentCount}
                 </div>
